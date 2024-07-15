@@ -1,0 +1,149 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Raspberry Pi Build HAT
+
+```elixir
+Mix.install([
+  {:circuits_uart, "~> 1.5"}
+])
+```
+
+## Show connected devices
+
+```elixir
+Circuits.UART.enumerate
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+%{"ttyS0" => %{}}
+```
+
+```elixir
+{:ok, pid} = Circuits.UART.start_link()
+Circuits.UART.open(pid, "ttyS0", speed: 115200, active: true)
+Circuits.UART.configure(pid, framing: {Circuits.UART.Framing.Line, separator: "\r\n"})
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+```elixir
+Circuits.UART.write(pid, "\recho 0 ; list\r")
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+```elixir
+Circuits.UART.write(pid, "\rversion")
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+```elixir
+[{:messages, msgs}] = Process.info(self(), [:messages])
+for m <- msgs, do: IO.puts(elem(m, 2))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+
+Error
+
+P0: connected to active ID 31
+type 31
+  nmodes =5
+  nview  =3
+  baud   =115200
+  hwver  =30000000
+  swver  =110C0000
+  M0 POWER SI = PCT
+    format count=1 type=0 chars=4 dp=0
+    RAW: 00000000 00000064    PCT: 00000000 00000064    SI: 00000000 00000064
+  M1 SPEED SI = PCT
+    format count=1 type=0 chars=4 dp=0
+    RAW: 00000000 00000064    PCT: 00000000 00000064    SI: 00000000 00000064
+  M2 POS SI = DEG
+    format count=1 type=2 chars=11 dp=0
+    RAW: 00000000 00000168    PCT: 00000000 00000064    SI: 00000000 00000168
+  M3 APOS SI = DEG
+    format count=1 type=1 chars=3 dp=0
+    RAW: 00000000 000000B3    PCT: 00000000 000000C8    SI: 00000000 000000B3
+  M4 CALIB SI = CAL
+    format count=2 type=1 chars=5 dp=0
+    RAW: 00000000 00000E10    PCT: 00000000 00000064    SI: 00000000 00000E10
+  M5 STATS SI = MIN
+    format count=14 type=1 chars=5 dp=0
+    RAW: 00000000 0000FFFF    PCT: 00000000 00000064    SI: 00000000 0000FFFF
+  C0: M1+M2+M3
+     speed PID: 00000FA0 00000064 00002328 000003CA
+  position PID: 00002710 000003E8 0000C350 00000000
+P1: connected to active ID 3D
+type 3D
+  nmodes =9
+  nview  =0
+  baud   =115200
+  hwver  =30000000
+  swver  =12040000
+  M0 COLOR SI = IDX
+    format count=1 type=0 chars=2 dp=0
+    RAW: 00000000 0000000A    PCT: 00000000 00000064    SI: 00000000 0000000A
+  M1 REFLT SI = PCT
+    format count=1 type=0 chars=3 dp=0
+    RAW: 00000000 00000064    PCT: 00000000 00000064    SI: 00000000 00000064
+  M2 AMBI SI = PCT
+    format count=1 type=0 chars=3 dp=0
+    RAW: 00000000 00000064    PCT: 00000000 00000064    SI: 00000000 00000064
+  M3 LIGHT SI = PCT
+    format count=3 type=0 chars=3 dp=0
+    RAW: 00000000 00000064    PCT: 00000000 00000064    SI: 00000000 00000064
+  M4 RREFL SI = RAW
+    format count=2 type=1 chars=4 dp=0
+    RAW: 00000000 00000400    PCT: 00000000 00000064    SI: 00000000 00000400
+  M5 RGB I SI = RAW
+    format count=4 type=1 chars=4 dp=0
+    RAW: 00000000 00000400    PCT: 00000000 00000064    SI: 00000000 00000400
+  M6 HSV SI = RAW
+    format count=3 type=1 chars=4 dp=0
+    RAW: 00000000 00000168    PCT: 00000000 00000064    SI: 00000000 00000168
+  M7 SHSV SI = RAW
+    format count=4 type=1 chars=4 dp=0
+    RAW: 00000000 00000168    PCT: 00000000 00000064    SI: 00000000 00000168
+  M8 DEBUG SI = RAW
+    format count=4 type=1 chars=4 dp=0
+    RAW: 00000000 0000FFFF    PCT: 00000000 00000064    SI: 00000000 0000FFFF
+  M9 CALIB SI = 
+    format count=7 type=1 chars=5 dp=0
+    RAW: 00000000 0000FFFF    PCT: 00000000 00000064    SI: 00000000 0000FFFF
+  C0: M0+M1+M5+M6
+     speed PID: 00000000 00000000 00000000 00000000
+  position PID: 00000000 00000000 00000000 00000000
+P2: no device detected
+P3: no device detected
+
+
+Error
+
+Firmware version: 1674818421 2023-01-27T11:20:21+00:00
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[:ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok,
+ :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok,
+ :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, :ok, ...]
+```
