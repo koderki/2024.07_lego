@@ -49,8 +49,8 @@ git clone https://github.com/asdf-vm/asdf.git ~/.asdf
 
 Open `.bashrc` file with `nano ~/.bashrc` and append these lines to the end
 ```
-. “$HOME/.asdf/asdf.sh”
-. “$HOME/.asdf/completions/asdf.bash”
+. "$HOME/.asdf/asdf.sh"
+. "$HOME/.asdf/completions/asdf.bash"
 ```
 
 Install Erlang and Elixir
